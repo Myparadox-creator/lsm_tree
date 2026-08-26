@@ -21,6 +21,8 @@
 > * **Point Read (Bloom HIT - Disk Seek)**: **189,263 ops/sec** | **Avg Latency**: **5.23 μs** | **P99 Latency**: **13.50 μs**
 > * **Point Read (Bloom MISS - Bypasses Disk)**: **1,315,789 ops/sec** | **Avg Latency**: **0.76 μs** | **P99 Latency**: **2.20 μs**
 > * **Zero Page-Cache Locks**: Direct Memory Access (DMA) via `O_DIRECT` provides **100x higher write throughput** over traditional `write` + `fdatasync`.
+>
+> These aren't narrated numbers — they're the direct output of [`benchmarks/bench_write.cpp`](benchmarks/bench_write.cpp) and [`benchmarks/bench_read.cpp`](benchmarks/bench_read.cpp), recorded in [`benchmarks/results.md`](benchmarks/results.md). Run `./run_all.sh` after building to reproduce them yourself.
 
 ---
 
@@ -111,7 +113,7 @@ sequenceDiagram
 
 ## 📊 Empirical Benchmarks
 
-Tested in a privileged Linux environment (Ubuntu 22.04, Kernel 6.12, NVMe SSD):
+Tested in a privileged Linux environment (Ubuntu 22.04, Kernel 6.12, NVMe SSD). Reproducible via [`benchmarks/bench_write.cpp`](benchmarks/bench_write.cpp) and [`benchmarks/bench_read.cpp`](benchmarks/bench_read.cpp) — full recorded run in [`benchmarks/results.md`](benchmarks/results.md).
 
 | Operation | Implementation | Throughput | Avg Latency | P99 Latency | Reliability & Safety |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -134,6 +136,8 @@ mkdir -p build && cd build && cmake .. && make -j$(nproc)
 ./test_bloom_filter   # Cache-aligned Bloom Filter false-positive rates
 ./test_wal_recovery   # Process crash simulation, WAL replay & CRC32 corruption validation
 ```
+
+To reproduce the benchmark table above rather than just the correctness tests, run `./run_all.sh` from the project root after building — it runs the unit tests followed by `bench_write` and `bench_read`.
 
 ---
 
